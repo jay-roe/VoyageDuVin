@@ -2,13 +2,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from .forms import NameForm
+from .utils import add_score
 
 
 def index(request):
     if request.method == "POST":
         form = NameForm(request.POST)
         if form.is_valid():
-            # put into excel
+            add_score(form.data.get('name'))
             return HttpResponseRedirect("/thanks")
     else:
         form = NameForm()
