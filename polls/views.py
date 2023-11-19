@@ -9,7 +9,7 @@ def index(request):
     if request.method == "POST":
         form = NameForm(request.POST)
         if form.is_valid():
-            add_score(form.data.get('name'))
+            add_score(list(form.data.values())[1:])
             return HttpResponseRedirect("/thanks")
     else:
         form = NameForm()
