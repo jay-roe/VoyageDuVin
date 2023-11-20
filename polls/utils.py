@@ -3,11 +3,15 @@ from openpyxl import Workbook, load_workbook
 
 from VoyageDuVin import settings
 
-path = os.path.join(settings.MEDIA_ROOT, "results.xlsx")
+filename = "results.xlsx"
+path = os.path.join(settings.MEDIA_ROOT, filename)
 sheet = "Sheet"  # default sheet
 
 
 def create_workbook():
+    if not os.path.exists(settings.MEDIA_ROOT):
+        os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+
     wb = Workbook()
     ws = wb[sheet]
     ws['A1'] = "Name"
