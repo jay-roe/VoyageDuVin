@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "bootstrap";
+import axios from "axios";
 
 const ListeVin = new Map([
   [
@@ -47,6 +48,18 @@ const orangeImg =
   "https://www.saq.com/media/wysiwyg/product_tags/particularite/vo_fr.png";
 const bioImg =
   "https://www.saq.com/media/wysiwyg/product_tags/particularite/i_fr.png";
+
+function testCall() {
+  let scores = Array.from(ListeVin, (vin) => {
+    return document.getElementById(vin[0]+"input").value
+  });
+  let name = document.getElementById("name").value
+  axios.post("api/", {
+    name: name,
+    scores: scores
+  })
+    .then((response) => window.location.assign(response.request.responseURL));
+}
 
 function handleShow(vinId) {
   const currVin = ListeVin.get(vinId);
@@ -117,6 +130,7 @@ let JSX = (
         type="text"
         className="form-control w-50 ms-2 me-2"
         placeholder="Nom"
+        id="name"
       />
     </div>
     <h4 className="m-2">{"Liste des vins:"}</h4>
@@ -142,7 +156,7 @@ let JSX = (
                     step="0.01"
                     min="0"
                     max="10"
-                    id={vin[0].id}
+                    id={vin[0]+"input"}
                     placeholder="Ta note"
                   />
                 </div>
@@ -155,7 +169,7 @@ let JSX = (
         );
       })}
     </div>
-    <button type="button" className="btn btn-primary m-2">
+    <button type="button" className="btn btn-primary m-2" onClick={() => testCall()}>
       Soumettre
     </button>
 

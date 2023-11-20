@@ -1,19 +1,26 @@
 import os
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .forms import NameForm
 from .utils import add_score, create_workbook
 from VoyageDuVin import settings
 
+import json
 
 def index(request):
     if request.method == "POST":
-        form = NameForm(request.POST)
-        if form.is_valid():
-            add_score(list(form.data.values())[1:])
-            return HttpResponseRedirect("/thanks")
+        #print(request.body.get("name"))
+        body = json.loads(request.body)
+        print(body.get("name"))
+        print(body.get('scores'))
+        add_score([body.get("name")] + body.get('scores'))
+        return redirect("/api/thanks")
+        #form = NameForm(request.POST)
+        #if form.is_valid():
+            #add_score(list(form.data.values())[1:])
+            #return HttpResponseRedirect("/thanks")
     else:
         form = NameForm()
 
@@ -46,4 +53,4 @@ def delete_results(request):
 
         return render(request, "polls/secret_delete.html", {})
 
-    return HttpResponseRedirect("/thanks")  # You only get here if you're a bitch
+    return HttpResponseRedirect("/api/thanks")  # You only get here if you're a bitch

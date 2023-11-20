@@ -22,8 +22,7 @@ def render_react(request):
     return render(request, "index.html")
 
 urlpatterns = [
-    path('', include("polls.urls")),
+    path("api/", include("polls.urls")),
     path('admin/', admin.site.urls),
     re_path(r"^$", render_react),
-    re_path(r"^(?:.*)/?$", render_react),
 ]
