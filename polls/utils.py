@@ -1,7 +1,9 @@
 import os.path
 from openpyxl import Workbook, load_workbook
 
-path = "results.xlsx"
+from VoyageDuVin import settings
+
+path = os.path.join(settings.MEDIA_ROOT, "results.xlsx")
 sheet = "Sheet"  # default sheet
 
 
