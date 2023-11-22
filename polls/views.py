@@ -47,3 +47,6 @@ def delete_results(request):
         return render(request, "polls/secret_delete.html", {})
 
     return HttpResponseRedirect("/thanks")  # You only get here if you're a bitch
+
+def vins(request):
+    return render(request, "polls/vins.html", {})
