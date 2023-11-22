@@ -3,21 +3,32 @@ import os
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import NameForm
+from .models import Session, Wine
+from .forms import WineScoreForm
 from .utils import add_score, create_workbook
 from VoyageDuVin import settings
 
 
 def index(request):
     if request.method == "POST":
-        form = NameForm(request.POST)
+        form = WineScoreForm(request.POST)
         if form.is_valid():
             add_score(list(form.data.values())[1:])
             return HttpResponseRedirect("/thanks")
-    else:
-        form = NameForm()
 
-    return render(request, "polls/index.html", {"form": form})
+    # get wines
+    wines_qs = Session.objects.filter(pk=1).first().wines.order_by('order').all()
+    wines = list(wines_qs)
+    wine_tags = ['name_dummy']
+    for wine_qs in wines_qs:
+        tags_qs = wine_qs.tags.all()
+        wine_tags.append(list(tags_qs))
+
+    # prepare context
+    form = WineScoreForm(wines=wines)
+    wines.insert(0, 'name_dummy')
+    form_data = zip(form, wines, wine_tags)
+    return render(request, "polls/index.html", {"form": form_data})
 
 
 def thanks(request):
@@ -47,6 +58,7 @@ def delete_results(request):
         return render(request, "polls/secret_delete.html", {})
 
     return HttpResponseRedirect("/thanks")  # You only get here if you're a bitch
+
 
 def vins(request):
     return render(request, "polls/vins.html", {})

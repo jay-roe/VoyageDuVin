@@ -1,10 +1,46 @@
 {% extends "../base.html" %}
 
 {% block content %}
-    Thierry's code here
     <form action="/" method="post">
         {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="OK">
+        {% for field, wine, tags in form %}
+            {% if field.name == "name" %}
+                {# name field #}
+                <div class="mb-3">
+                    <label for="id_name" style="margin-left:50px" class="form-label"><b>Ton beau nom ici</b></label>
+                    {{ field }}
+                </div>
+            {% else %}
+                {# wine score fields #}
+                <div class="mb-3">
+                    <a data-bs-toggle="modal" data-bs-target="#wineModal{{ forloop.counter0 }}"><img src="{{ wine.image.url }}"  width="200" class="btn" type="image" alt="..."></a>
+                    <b for="{{ field.name }}" class="form-label">Vin {{ forloop.counter0 }} - {{ wine.short_name }}</b>
+                    {{ field }}
+                </div>
+                {# modal #}
+                <div class="modal fade" id="wineModal{{ forloop.counter0 }}">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="wineModalLabel{{ forloop.counter0 }}">{{ wine.full_name }}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                <b> Cépage</b>: {{ wine.variety }}</p>
+                                <p> <b> Pays, Région</b>: {{ wine.region }}
+                                </p>
+                                <p> <b> Degré d'alcool</b>: {{ wine.alcohol_content }} % </p>
+                                <p> <b> Taux de sucre</b>: {{ wine.sweetness }} g/L </p>
+                                {% for tag in tags %}
+                                    <img src="{{ tag.image.url }}" height="100" width="100" class="img-fluid">
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 {% endblock %}

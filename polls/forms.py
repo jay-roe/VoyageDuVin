@@ -1,12 +1,20 @@
 from django import forms
 
 
-# TODO this will need to be dynamic eventually
-class NameForm(forms.Form):
-    name = forms.CharField(label="Your name", max_length=100)
-    vin1 = forms.FloatField(min_value=0, max_value=10, step_size=0.01)
-    vin2 = forms.FloatField(min_value=0, max_value=10, step_size=0.01)
-    vin3 = forms.FloatField(min_value=0, max_value=10, step_size=0.01)
-    vin4 = forms.FloatField(min_value=0, max_value=10, step_size=0.01)
-    vin5 = forms.FloatField(min_value=0, max_value=10, step_size=0.01)
-    vin6 = forms.FloatField(min_value=0, max_value=10, step_size=0.01)
+class WineScoreForm(forms.Form):
+    def __init__(self, wines, *args, **kwargs):
+        super(WineScoreForm, self).__init__(*args, **kwargs)
+        for i, wine in enumerate(wines):
+            self.fields[f'wine{i+1}'] = forms.FloatField(min_value=0, max_value=10, step_size=0.01)
+            self.fields[f'wine{i+1}'].widget.attrs.update({
+                "placeholder": "Ta note",
+                "class": "form-control",
+                "style": "width: 100px;margin-left:50px"
+            })
+
+    name = forms.CharField(max_length=100)
+    name.widget.attrs.update({
+        "placeholder": "Ta note",
+        "class": "form-control",
+        "style": "width: 400px;margin-left:50px"
+    })
