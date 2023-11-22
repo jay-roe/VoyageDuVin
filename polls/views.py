@@ -5,16 +5,16 @@ from django.shortcuts import render
 
 from .models import Session, Wine
 from .forms import WineScoreForm
-from .utils import add_score, create_workbook
+from .utils import add_score_excel, create_workbook
 from VoyageDuVin import settings
 
 
-def index(request):
+def index(request, session):
     if request.method == "POST":
-        form = WineScoreForm(request.POST)
+        form = WineScoreForm([], request.POST)
         if form.is_valid():
-            add_score(list(form.data.values())[1:])
-            return HttpResponseRedirect("/thanks")
+            add_score_excel(list(form.data.values())[1:])
+            return HttpResponseRedirect("thanks")
 
     # get wines
     wines_qs = Session.objects.filter(pk=1).first().wines.order_by('order').all()

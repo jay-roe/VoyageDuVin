@@ -1,7 +1,7 @@
 {% extends "../base.html" %}
 
 {% block content %}
-    <form action="/" method="post">
+    <form method="POST">
         {% csrf_token %}
         {% for field, wine, tags in form %}
             {% if field.name == "name" %}
@@ -9,6 +9,7 @@
                 <div class="mb-3">
                     <label for="id_name" style="margin-left:50px" class="form-label"><b>Ton beau nom ici</b></label>
                     {{ field }}
+                    {{ field.errors }}
                 </div>
             {% else %}
                 {# wine score fields #}
@@ -16,6 +17,7 @@
                     <a data-bs-toggle="modal" data-bs-target="#wineModal{{ forloop.counter0 }}"><img src="{{ wine.image.url }}"  width="200" class="btn" type="image" alt="..."></a>
                     <b for="{{ field.name }}" class="form-label">Vin {{ forloop.counter0 }} - {{ wine.short_name }}</b>
                     {{ field }}
+                    {{ field.errors }}
                 </div>
                 {# modal #}
                 <div class="modal fade" id="wineModal{{ forloop.counter0 }}">

@@ -22,7 +22,7 @@ def create_workbook():
     wb.save(path)
 
 
-def add_score(data):
+def add_score_excel(data):
     if not (os.path.isfile(path)):
         create_workbook()
 
