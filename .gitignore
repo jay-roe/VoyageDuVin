@@ -1,6 +1,7 @@
 .idea
 __pycache__
 staticfiles
+media
 db.sqlite3
 results.xlsx
 .env
