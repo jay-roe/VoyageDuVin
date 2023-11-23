@@ -17,7 +17,7 @@ def index(request, session):
             return HttpResponseRedirect("thanks")
 
     # get wines
-    wines_qs = Session.objects.filter(pk=1).first().wines.order_by('order').all()
+    wines_qs = Session.objects.filter(pk=session).first().wines.order_by('order').all() if Session.objects.filter(pk=session).first() is not None else []
     wines = list(wines_qs)
     wine_tags = ['name_dummy']
     for wine_qs in wines_qs:
