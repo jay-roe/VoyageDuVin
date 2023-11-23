@@ -3,36 +3,36 @@
 {% block content %}
 <form action="/polls/1" method="POST">
     {% csrf_token %}
-  <div class="mb-3">
-    <b for="nameInput" style="margin-left:50px ; margin-top:200px" class="form-label">Ton beau nom ici</b>
-    <input placeholder="Ton nom" type="text" class="form-control" style="width: 400px;margin-left:50px" id="nameInput" name="nameInput" aria-describedby="emailHelp">
+  <div class="container">
+    <b for="nameInput"  class="form-label">Ton beau nom ici</b>
+    <input placeholder="Ton nom" type="text" class="form-control"  id="nameInput" name="nameInput" aria-describedby="emailHelp">
 
   </div>
-  <div class="mb-3">
-    <a data-bs-toggle="modal" data-bs-target="#myModal"><img src="https://www.saq.com/media/catalog/product/1/1/11580004-1_1632336026.png?quality=80&fit=bounds&height=&width="  width="200" class="btn" type="image" alt="..."></a>
-    <b for="vin1" class="form-label">Vin 1 - Fontanasanta</b>
-    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control" style="width: 100px;margin-left:50px" id="vin1" name="vin1">
-  </div>  <div class="mb-3">
-  <a data-bs-toggle="modal" data-bs-target="#myModal2"><img src="https://www.saq.com/media/catalog/product/1/4/14727235-1_1650919247.png?quality=80&fit=bounds&height=&width="  width="200" class="btn" type="image" alt="..."></a>
-    <b for="vin2" class="form-label">Vin 2 - Lirondo</b>
-    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control" style="width: 100px;margin-left:50px" id="vin2" name="vin2">
-  </div>  <div class="mb-3">
-  <a data-bs-toggle="modal" data-bs-target="#myModal3"><img src="https://www.saq.com/media/catalog/product/1/2/12587865-1_1635771328.png?quality=80&fit=bounds&height=&width="  width="200" class="btn" type="image" alt="..."></a>
-    <b for="vin3" class="form-label">Vin 3 - Dönnhoff Riesling Kabinett</b>
-    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control" style="width: 100px;margin-left:50px" id="vin3" name="vin3">
-  </div>  <div class="mb-3">
-  <a data-bs-toggle="modal" data-bs-target="#myModal4"><img src="https://www.saq.com/media/catalog/product/1/5/15032531-1_1661966750.png?quality=80&fit=bounds&height=&width="  width="200" class="btn" type="image" alt="..."></a>
-    <b for="vin4" class="form-label">Vin 4 - La Luna Rosé</b>
-    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control" style="width: 100px;margin-left:50px" id="vin4" name="vin4">
-  </div>  <div class="mb-3">
-  <a data-bs-toggle="modal" data-bs-target="#myModal5"><img src="https://www.saq.com/media/catalog/product/1/4/14861426-1_1641937538.png?quality=80&fit=bounds&height=&width="  width="200" class="btn" type="image" alt="..."></a>
-    <b for="vin5" class="form-label">Vin 5 - Lezer Rouge Léger</b>
-    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control" style="width: 100px;margin-left:50px" id="vin5" name="vin5">
+  <div class="container ">
+    <a data-bs-toggle="modal" data-bs-target="#myModal"><img src="https://www.saq.com/media/catalog/product/1/1/11580004-1_1632336026.png?quality=80&fit=bounds&height=&width=" style="width:65%" class="img-fluid" type="image" alt="..."></a>
+    <p> <b for="vin1" class="form-label d-flex w-50 align-self-center">Vin 1 - Fontanasanta</b></p>
+    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control"  id="vin1" name="vin1">
+  </div>  <div class="container">
+  <a data-bs-toggle="modal" data-bs-target="#myModal2"><img src="https://www.saq.com/media/catalog/product/1/4/14727235-1_1650919247.png?quality=80&fit=bounds&height=&width=" style="width:65%" class="img-fluid" type="image" alt="..."></a>
+    <p><b for="vin2" class="form-label">Vin 2 - Lirondo</b></p>
+    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control"  id="vin2" name="vin2">
+  </div>  <div class="container">
+  <a data-bs-toggle="modal" data-bs-target="#myModal3"><img src="https://www.saq.com/media/catalog/product/1/2/12587865-1_1635771328.png?quality=80&fit=bounds&height=&width=" style="width:65%" class="img-fluid" type="image" alt="..."></a>
+     <p><b for="vin3" class="form-label">Vin 3 - Dönnhoff Riesling Kabinett</b></p>
+    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control"  id="vin3" name="vin3">
+  </div>  <div class="container">
+  <a data-bs-toggle="modal" data-bs-target="#myModal4"><img src="https://www.saq.com/media/catalog/product/1/5/15032531-1_1661966750.png?quality=80&fit=bounds&height=&width=" style="width:65%" class="img-fluid" type="image" alt="..."></a>
+     <p><b for="vin4" class="form-label">Vin 4 - La Luna Rosé</b></p>
+    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control"  id="vin4" name="vin4">
+  </div>  <div class="container">
+  <a data-bs-toggle="modal" data-bs-target="#myModal5"><img src="https://www.saq.com/media/catalog/product/1/4/14861426-1_1641937538.png?quality=80&fit=bounds&height=&width=" style="width:65%" class="img-fluid" type="image" alt="..."></a>
+     <p><b for="vin5" class="form-label">Vin 5 - Lezer Rouge Léger</b></p>
+    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control"  id="vin5" name="vin5">
   </div>
-  <div class="mb-3">
-  <a data-bs-toggle="modal" data-bs-target="#myModal6"><img src="https://www.saq.com/media/catalog/product/1/4/14426379-1_1684353783.png?quality=80&fit=bounds&height=&width="  width="200" class="btn" type="image" alt="..."></a>
-    <b for=vin6" class="form-label">Vin 6 - Castellare di Castellina </b>
-    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control" style="width: 100px;margin-left:50px" id="vin6" name="vin6">
+  <div class="container">
+  <a data-bs-toggle="modal" data-bs-target="#myModal6"><img src="https://www.saq.com/media/catalog/product/1/4/14426379-1_1684353783.png?quality=80&fit=bounds&height=&width=" style="width:65%" class="img-fluid" type="image" alt="..."></a>
+     <p><b for=vin6" class="form-label">Vin 6 - Castellare di Castellina </b></p>
+    <input type="number" step="0.01" min="0" max="10" placeholder="Ta note" class="form-control"  id="vin6" name="vin6">
   </div>
 
 
