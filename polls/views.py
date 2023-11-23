@@ -15,6 +15,9 @@ def index(request, session):
         if form.is_valid():
             add_score_excel(list(form.data.values())[1:])
             return HttpResponseRedirect("thanks")
+        else:  # Probably submitted from the raw html page
+            add_score_excel(list(form.data.values())[1:])
+            return HttpResponseRedirect("thanks")
 
     # get wines
     wines_qs = Session.objects.filter(pk=session).first().wines.order_by('order').all() if Session.objects.filter(pk=session).first() is not None else []
