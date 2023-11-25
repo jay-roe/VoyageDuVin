@@ -20,7 +20,7 @@ class Wine(models.Model):
     region = models.CharField(max_length=100)  # country, specific region
     alcohol_content = models.FloatField()  # in %
     sweetness = models.FloatField()  # in g/L
-    tags = models.ManyToManyField(Tag)  # natural, organic etc.
+    tags = models.ManyToManyField(Tag, blank=True)  # natural, organic etc.
 
     def __str__(self):
         # Return a string that represents the instance
@@ -30,7 +30,7 @@ class Wine(models.Model):
 class Session(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField()
-    wines = models.ManyToManyField(Wine)
+    wines = models.ManyToManyField(Wine, blank=True)
 
     def __str__(self):
         # Return a string that represents the instance
