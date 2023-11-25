@@ -20,7 +20,10 @@ class Wine(models.Model):
     region = models.CharField(max_length=100)  # country, specific region
     alcohol_content = models.FloatField()  # in %
     sweetness = models.FloatField()  # in g/L
+    color = models.CharField(max_length=100) 
     tags = models.ManyToManyField(Tag, blank=True)  # natural, organic etc.
+    emoji_sucre = models.BooleanField(default=False) # special boolean to show emoji in modal
+    price = models.FloatField()
 
     def __str__(self):
         # Return a string that represents the instance

@@ -1,14 +1,14 @@
-from django.apps import AppConfig
+from django.core.management.base import BaseCommand
+from django.core.files import File
+from polls.models import Wine, Tag
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import requests
 import argparse
-from django.core.exceptions import ObjectDoesNotExist
 
-class PollsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'polls'
-
+class Command(BaseCommand):
+    args = '[saq_urls]'
+    help = 'our help string comes here'
     wineDict = {
         "name": "",
         "price": "",
@@ -28,13 +28,10 @@ class PollsConfig(AppConfig):
     }
 
     def _create_wines(self):
-        from django.core.exceptions import ObjectDoesNotExist
-        from django.core.files import File
-        from polls.models import Wine, Tag
         try:
             wine = Wine.objects.get(short_name=" ".join(self.wineDict["name"].split(" ")[:-1]))
-        except ObjectDoesNotExist as DoesNotExist:
-            new_wine = Wine(
+        except DoesNotExist:
+            new_wine, created = Wine(
                 short_name=" ".join(self.wineDict["name"].split(" ")[:-1]),
                 full_name=self.wineDict["name"],
                 image=self.wineDict["photo_url"],
@@ -145,10 +142,68 @@ class PollsConfig(AppConfig):
         except:
             self.wineDict["special_feature_photo_url"] = {}
 
-    def ready(self):
-        file =  open("degustation3.txt", "r")
+    def add_arguments(self, parser):
+        parser.add_argument('--file', type=argparse.FileType('r'))
+
+    def handle(self, *args, **options):
+        file = options["file"]
         lines = file.readlines()
         for line in lines:
             self._scrape_wines(line.strip())
             self._create_wines()
 
+
+
+# English version
+''' 
+# Extracting wine name
+        wine_name = soup.find("h1", class_="page-title").text.strip()
+        self.wineDict["name"] = wine_name
+
+        # Extracting price
+        price = soup.find("span", class_="price").text.strip()
+        self.wineDict["price"] = price
+
+        # Extracting country
+        country = soup.find("strong", attrs={"data-th": "Country"}).text.strip()
+        self.wineDict["country"] = country
+
+        # Extracting regulated designation
+        regulated_designation = soup.find("strong", attrs={"data-th": "Regulated Designation"}).text.strip()
+        self.wineDict["regulated_designation"] = regulated_designation
+
+        # Extracting grape variety
+        grape_variety = soup.find("strong", attrs={"data-th": "Grape variety"}).text.strip()
+        self.wineDict["grape_variety"] = grape_variety
+
+        # Extracting degree of alcohol
+        degree_alcohol = soup.find("strong", attrs={"data-th": "Degree of alcohol"}).text.strip()
+        self.wineDict["degree_alcohol"] = degree_alcohol
+
+        # Extracting sugar content
+        sugar_content = soup.find("strong", attrs={"data-th": "Sugar content"}).text.strip()
+        self.wineDict["sugar_content"] = sugar_content
+
+        # Extracting color
+        color = soup.find("strong", attrs={"data-th": "Color"}).text.strip()
+        self.wineDict["color"] = color
+
+        # Extracting special features
+        special_features = soup.find("strong", attrs={"data-th": "Special feature"}).text.strip().split(", ")
+        self.wineDict["special_feature"] = special_features
+
+        # Extracting size
+        size = soup.find("strong", attrs={"data-th": "Size"}).text.strip()
+        self.wineDict["size"] = size
+
+        # Extracting producer
+        producer = soup.find("strong", attrs={"data-th": "Producer"}).text.strip()
+        self.wineDict["producer"] = producer
+
+        # Extracting SAQ code
+        saq_code = soup.find("strong", attrs={"data-th": "SAQ code"}).text.strip()
+        self.wineDict["saq_code"] = saq_code
+
+        photo_url = soup.find("div", attrs={"id": "mtImageContainer"}).find("img", attrs={"itemprop": "image"})["src"]
+        self.wineDict["photo_url"] = photo_url
+'''
