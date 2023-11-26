@@ -1,9 +1,6 @@
 .idea
 __pycache__
 media
+staticfiles
 results.xlsx
 .env
-# exclude everything
-staticfiles/*
-# exception to the rule
-!staticfiles/.gitkeep 

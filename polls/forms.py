@@ -16,3 +16,6 @@ class WineScoreForm(forms.Form):
         "placeholder": "Nom",
         "class": "form-control",
     })
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()

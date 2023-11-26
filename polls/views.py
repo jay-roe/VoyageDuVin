@@ -4,8 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 from .models import Session, Wine
-from .forms import WineScoreForm
-from .utils import add_score_excel, create_workbook
+from .forms import WineScoreForm, UploadFileForm
+from .utils import add_score_excel, create_workbook, handle_new_wines
 from VoyageDuVin import settings
 
 
@@ -40,6 +40,16 @@ def thanks(request):
 
 def secret(request):
     return render(request, "polls/secret.html", {})
+
+def add_wines(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST)
+        if form.is_valid:
+            handle_new_wines(request.POST["files"])
+            return render(request, "polls/secret_add.html", {})
+    else:
+        form = UploadFileForm()
+    return HttpResponseRedirect("add")
 
 
 def download_results(request):
