@@ -60,9 +60,11 @@
                                     {% else %}
                                     <p> <b> Taux de sucre</b>: {{ wine.sweetness }} g/L </p>
                                     {% endif %}
-                                    {% for tag in tags %}
-                                        <img src="{{ tag.image.url }}" height="100" width="100" class="img-fluid">
-                                    {% endfor %}
+                                    <div style="height:100%">
+                                        {% for tag in tags %}
+                                            <img src="{{ tag.image.url }}" height="35vh">
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
