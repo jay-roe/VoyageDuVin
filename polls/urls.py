@@ -11,5 +11,6 @@ urlpatterns = [
     path("secret/add", views.add_wines, name="add_wines"),
     path("secret/download", views.download_results, name="download_results"),
     path("secret/delete", views.delete_results, name="delete_results"),
+    path("secret/fuckyou", views.fuckyou, name="fuckyou"),
     path("vins", views.vins, name="vins")
 ]

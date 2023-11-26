@@ -37,6 +37,8 @@ def index(request, session):
 def thanks(request):
     return render(request, "polls/thanks.html", {})
 
+def fuckyou(request):
+    return render(request, "polls/fuckyou.html", {})
 
 def secret(request):
     return render(request, "polls/secret.html", {})
@@ -71,7 +73,7 @@ def delete_results(request):
 
         return render(request, "polls/secret_delete.html", {})
 
-    return HttpResponseRedirect("/thanks")  # You only get here if you're a bitch
+    return HttpResponseRedirect("fuckyou")  # You only get here if you're a bitch
 
 
 def vins(request):
