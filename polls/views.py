@@ -46,10 +46,11 @@ def add_wines(request):
         form = UploadFileForm(request.POST)
         if form.is_valid:
             handle_new_wines(request.POST["files"])
-            return render(request, "polls/secret_add.html", {})
+            return HttpResponseRedirect("add")
     else:
         form = UploadFileForm()
-    return HttpResponseRedirect("add")
+    return render(request, "polls/secret_add.html", {})
+    
 
 
 def download_results(request):
