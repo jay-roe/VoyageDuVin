@@ -69,7 +69,7 @@ def _create_wines():
             variety=wineDict["grape_variety"],
             region=wineDict["country"],
             alcohol_content=float(wineDict["degree_alcohol"].split(" ")[0].replace(",", ".")),
-            sweetness=float(wineDict["sugar_content"].split(" ")[0].replace(",", ".")),
+            sweetness=float(wineDict["sugar_content"].split(" ")[0].replace(",", ".").replace("<","")),
             color=wineDict["color"],
             price=float(wineDict["price"].split(u'\xa0')[0].replace(",", "."))
         )

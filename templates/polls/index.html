@@ -8,11 +8,14 @@
                 {% if field.name == "name" %}
                     {# name field #}
                     <div class="d-flex flex-column gap-2 mb-4 p-2">
-                        <h4 class="fw-bold">Ton beau nom ici</h4>
+                        <h4 class="fw-bold">Ton nom ici</h4>
                         {{ field }}
                         {{ field.errors }}
                     </div>
                 {% else %}
+                    <div class="d-flex align-self-center fw-bold " style="margin-bottom: 20px;">
+                        Vin {{ forloop.counter0 }} - {{ wine.short_name }}
+                    </div>
                     {# wine score fields #}
                     <div class="d-flex flex-row mb-5 justify-content-center">
                         <div id="leftSide" class="d-flex flex-column gap-4 justify-content-center">
@@ -26,9 +29,7 @@
                                         margin-right: auto;"
                                 />
                             </a>
-                            <div class="d-flex align-self-center fw-bold">
-                                Vin {{ forloop.counter0 }} - {{ wine.short_name }}
-                            </div>
+
                             <div class="d-flex w-100 align-self-center">
                                 {{ field }}
                                 {{ field.errors }}
