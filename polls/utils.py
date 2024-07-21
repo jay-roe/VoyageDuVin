@@ -2,7 +2,7 @@ import os.path
 from openpyxl import Workbook, load_workbook
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
-from polls.models import Wine, Tag
+from polls.models import Wine, Tag, Session
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import requests
@@ -12,29 +12,44 @@ from VoyageDuVin import settings
 
 filename = "results.xlsx"
 path = os.path.join(settings.MEDIA_ROOT, filename)
-sheet = "Sheet"  # default sheet
 
-
-def create_workbook():
+def create_workbook(session_ids):
     if not os.path.exists(settings.MEDIA_ROOT):
         os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
 
     wb = Workbook()
-    ws = wb[sheet]
-    ws['A1'] = "Name"
-    # TODO update this to match the desired session
-    for i in range(1, 7):
-        ws[f'{chr(65+i)}1'] = f'Vin {i}'
+    for session_id in session_ids:
+        session = Session.objects.get(pk=session_id)
+        wines = session.wines.order_by('order').all()
 
+        ws = wb.create_sheet(title=f"Session_{session_id}")
+        ws['A1'] = "Name"
+        for idx, wine in enumerate(wines, start=1):
+            ws[f'{chr(65 + idx)}1'] = wine.short_name
+
+    if 'Sheet' in wb.sheetnames:
+        wb.remove(wb['Sheet'])
     wb.save(path)
 
 
-def add_score_excel(data):
-    if not (os.path.isfile(path)):
-        create_workbook()
+def add_score_excel(data, session_id):
+    if not os.path.isfile(path):
+        # Create workbook with at least one session sheet if it doesn't exist
+        create_workbook([session_id])
 
     wb = load_workbook(filename=path)
-    ws = wb[sheet]
+    sheet_name = f"Session_{session_id}"
+    if sheet_name not in wb.sheetnames:
+        # Add a new sheet for the session if it doesn't exist
+        session = Session.objects.get(pk=session_id)
+        wines = session.wines.order_by('order').all()
+
+        ws = wb.create_sheet(title=sheet_name)
+        ws['A1'] = "Name"
+        for idx, wine in enumerate(wines, start=1):
+            ws[f'{chr(65 + idx)}1'] = wine.short_name
+    else:
+        ws = wb[sheet_name]
     ws.append(data)
     wb.save(path)
 
@@ -125,9 +140,12 @@ def _scrape_wines(line):
     regulated_designation = soup.find("strong", attrs={"data-th": "Désignation réglementée"}).text.strip()
     wineDict["regulated_designation"] = regulated_designation
 
-    # Extracting grape variety
-    grape_variety = soup.find("strong", attrs={"data-th": "Cépage"}).text.strip()
-    wineDict["grape_variety"] = grape_variety
+    try:
+        # Extracting grape variety
+        grape_variety = soup.find("strong", attrs={"data-th": "Cépage"}).text.strip()
+        wineDict["grape_variety"] = grape_variety
+    except:
+        pass
 
     # Extracting degree of alcohol
     degree_alcohol = soup.find("strong", attrs={"data-th": "Degré d'alcool"}).text.strip()

@@ -13,10 +13,10 @@ def index(request, session):
     if request.method == "POST":
         form = WineScoreForm([], request.POST)
         if form.is_valid():
-            add_score_excel(list(form.data.values())[1:])
+            add_score_excel(list(form.data.values())[1:], session)
             return HttpResponseRedirect("thanks")
         else:  # Probably submitted from the raw html page
-            add_score_excel(list(form.data.values())[1:])
+            add_score_excel(list(form.data.values())[1:], session)
             return HttpResponseRedirect("thanks")
 
     # get wines
@@ -56,8 +56,11 @@ def add_wines(request):
 
 
 def download_results(request):
+    # Get all session IDs
+    session_ids = Session.objects.values_list('id', flat=True)
+
     if not (os.path.isfile(os.path.join(settings.MEDIA_ROOT, "results.xlsx"))):
-        create_workbook()
+        create_workbook(session_ids)
 
     file = open(os.path.join(settings.MEDIA_ROOT, "results.xlsx"), 'rb')
     response = HttpResponse(file, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
