@@ -20,9 +20,10 @@ def create_workbook(session_ids):
     wb = Workbook()
     for session_id in session_ids:
         session = Session.objects.get(pk=session_id)
+        session_name = session.name.replace(" ", "_")  # Replace spaces with underscores for sheet names
         wines = session.wines.order_by('order').all()
 
-        ws = wb.create_sheet(title=f"Session_{session_id}")
+        ws = wb.create_sheet(title=session_name)
         ws['A1'] = "Name"
         for idx, wine in enumerate(wines, start=1):
             ws[f'{chr(65 + idx)}1'] = wine.short_name
@@ -38,18 +39,17 @@ def add_score_excel(data, session_id):
         create_workbook([session_id])
 
     wb = load_workbook(filename=path)
-    sheet_name = f"Session_{session_id}"
-    if sheet_name not in wb.sheetnames:
-        # Add a new sheet for the session if it doesn't exist
-        session = Session.objects.get(pk=session_id)
+    session = Session.objects.get(pk=session_id)
+    session_name = session.name.replace(" ", "_")
+    if session_name not in wb.sheetnames:
         wines = session.wines.order_by('order').all()
 
-        ws = wb.create_sheet(title=sheet_name)
+        ws = wb.create_sheet(title=session_name)
         ws['A1'] = "Name"
         for idx, wine in enumerate(wines, start=1):
             ws[f'{chr(65 + idx)}1'] = wine.short_name
     else:
-        ws = wb[sheet_name]
+        ws = wb[session_name]
     ws.append(data)
     wb.save(path)
 
