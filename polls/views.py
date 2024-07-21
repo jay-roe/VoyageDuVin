@@ -1,7 +1,8 @@
 import os
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 
 from .models import Session, Wine
 from .forms import WineScoreForm, UploadFileForm
@@ -9,18 +10,20 @@ from .utils import add_score_excel, create_workbook, handle_new_wines
 from VoyageDuVin import settings
 
 
-def index(request, session):
+def index(request, session_name):
+    session = get_object_or_404(Session, name=session_name.replace("_", " "))
+
     if request.method == "POST":
         form = WineScoreForm([], request.POST)
         if form.is_valid():
             add_score_excel(list(form.data.values())[1:], session)
-            return HttpResponseRedirect("thanks")
+            return HttpResponseRedirect(reverse('polls:thanks', args=[session_name]))
         else:  # Probably submitted from the raw html page
-            add_score_excel(list(form.data.values())[1:], session)
-            return HttpResponseRedirect("thanks")
+            add_score_excel(list(form.data.values())[1:], session.id)
+            return HttpResponseRedirect(reverse('polls:thanks', args=[session_name]))
 
     # get wines
-    wines_qs = Session.objects.filter(pk=session).first().wines.order_by('order').all() if Session.objects.filter(pk=session).first() is not None else []
+    wines_qs = session.wines.order_by('order').all()
     wines = list(wines_qs)
     wine_tags = ['name_dummy']
     for wine_qs in wines_qs:
@@ -31,11 +34,11 @@ def index(request, session):
     form = WineScoreForm(wines=wines)
     wines.insert(0, 'name_dummy')
     form_data = zip(form, wines, wine_tags)
-    return render(request, "polls/index.html", {"form": form_data})
+    return render(request, "polls/index.html", {"form": form_data, "session_name": session_name})
 
 
-def thanks(request):
-    return render(request, "polls/thanks.html", {})
+def thanks(request, session_name):
+    return render(request, "polls/thanks.html", {"session_name": session_name})
 
 def fuckyou(request):
     return render(request, "polls/fuckyou.html", {})

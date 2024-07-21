@@ -34,6 +34,10 @@ def create_workbook(session_ids):
 
 
 def add_score_excel(data, session_id):
+    # Ensure session_id is an integer
+    if isinstance(session_id, Session):
+        session_id = session_id.pk
+
     if not os.path.isfile(path):
         # Create workbook with at least one session sheet if it doesn't exist
         create_workbook([session_id])
