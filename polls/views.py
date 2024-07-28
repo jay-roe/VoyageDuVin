@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
-from .models import Session, Wine
+from .models import Session, SessionWine
 from .forms import WineScoreForm, UploadFileForm
 from .utils import add_score_excel, create_workbook, handle_new_wines
 from VoyageDuVin import settings
@@ -22,20 +22,19 @@ def index(request, session_name):
             add_score_excel(list(form.data.values())[1:], session.id)
             return HttpResponseRedirect(reverse('polls:thanks', args=[session_name]))
 
-    # get wines
-    wines_qs = session.wines.order_by('order').all()
-    wines = list(wines_qs)
+    # Get wines for the session with their order
+    session_wines_qs = SessionWine.objects.filter(session=session).order_by('order')
+    wines = [sw.wine for sw in session_wines_qs]
     wine_tags = ['name_dummy']
-    for wine_qs in wines_qs:
-        tags_qs = wine_qs.tags.all()
+    for sw in session_wines_qs:
+        tags_qs = sw.wine.tags.all()
         wine_tags.append(list(tags_qs))
 
-    # prepare context
+    # Prepare context
     form = WineScoreForm(wines=wines)
     wines.insert(0, 'name_dummy')
     form_data = zip(form, wines, wine_tags)
     return render(request, "polls/index.html", {"form": form_data, "session_name": session_name})
-
 
 def thanks(request, session_name):
     return render(request, "polls/thanks.html", {"session_name": session_name})

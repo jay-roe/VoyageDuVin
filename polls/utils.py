@@ -84,7 +84,6 @@ def _create_wines():
             short_name=" ".join(wineDict["name"].split(" ")[:-1]),
             full_name=wineDict["name"],
             image=wineDict["photo_url"],
-            order=1,
             variety=wineDict["grape_variety"],
             region=wineDict["country"],
             alcohol_content=float(wineDict["degree_alcohol"].split(" ")[0].replace(",", ".")),

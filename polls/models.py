@@ -15,7 +15,6 @@ class Wine(models.Model):
     short_name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=100)
     image = models.FileField(upload_to="wines")
-    order = models.IntegerField()  # ex: 3rd wine of the session
     variety = models.CharField(max_length=100)  # cepage
     region = models.CharField(max_length=100)  # country, specific region
     alcohol_content = models.FloatField()  # in %
@@ -33,11 +32,22 @@ class Wine(models.Model):
 class Session(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField()
-    wines = models.ManyToManyField(Wine, blank=True)
 
     def __str__(self):
         # Return a string that represents the instance
         return f"{self.name} - {self.date}"
+
+class SessionWine(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    wine = models.ForeignKey(Wine, on_delete=models.CASCADE)
+    order = models.IntegerField()  # ex: 3rd wine of the session
+
+    class Meta:
+        unique_together = ('session', 'wine')
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.session} - {self.wine} - {self.order}"
 
 
 class UserScore(models.Model):  # All scores for a user
@@ -51,5 +61,11 @@ class UserScore(models.Model):  # All scores for a user
 
 class WineScore(models.Model):
     user_score = models.ForeignKey(UserScore, on_delete=models.CASCADE)
-    wine = models.ForeignKey(Wine, on_delete=models.CASCADE)
+    session_wine = models.ForeignKey(SessionWine, on_delete=models.CASCADE)
     score = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(10.0)])
+
+    class Meta:
+        unique_together = ('user_score', 'session_wine')
+
+    def __str__(self):
+        return f"{self.user_score} - {self.session_wine} - {self.score}"
