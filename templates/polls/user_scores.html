@@ -1,0 +1,60 @@
+{% extends "../base.html" %}
+
+{% block content %}
+    <h2>Scores and Preferences for User: {{ user_name }}</h2>
+
+    {% if user_exists %}
+        <div class="user-profile">
+            <h3>Profile Information</h3>
+            <p><strong>Name:</strong> {{ user_name }}</p>
+            <p><strong>Average Score:</strong> {{ average_score|floatformat:2 }}</p>
+        </div>
+
+        <div class="session-scores">
+            <h3>Scores by Session</h3>
+            {% for session, wine_scores in scores_by_session.items %}
+                <h4>{{ session.name }} ({{ session.date }})</h4>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Wine</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for score in wine_scores %}
+                            <tr>
+                                <td><a href="{% url 'polls:wine_scores' score.session_wine.wine.id %}">{{ score.session_wine.wine.full_name }}</a></td>
+                                <td>{{ score.score }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
+
+        <div class="wine-preferences">
+            <h3>Wine Preferences</h3>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Wine Variety</th>
+                        <th>Count</th>
+                        <th>Average Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for variety, data in wine_preferences.items %}
+                        <tr>
+                            <td>{{ variety }}</td>
+                            <td>{{ data.count }}</td>
+                            <td>{{ data.average_score|floatformat:2 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No scores found for user {{ user_name }}.</p>
+    {% endif %}
+{% endblock %}

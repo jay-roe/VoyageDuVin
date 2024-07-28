@@ -1,0 +1,39 @@
+{% extends "../base.html" %}
+
+{% load custom_filters %}
+
+{% block content %}
+    <h2>Scores for Session: {{ session.name }}</h2>
+    <div class="table-responsive">
+        <table id="scoresTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    {% for wine in wines %}
+                        <th><a href="{% url 'polls:wine_scores' wine.id %}">{{ wine.short_name }}</a></th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td><a href="{% url 'polls:user_scores' user.name %}">{{ user.name }}</a></td>
+                        {% for wine in wines %}
+                            <td>{{ scores|get_item:user.name|get_item:wine.id|default:'-' }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Include DataTables JavaScript -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#scoresTable').DataTable();
+        });
+    </script>
+{% endblock %}

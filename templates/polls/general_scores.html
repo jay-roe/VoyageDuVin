@@ -1,0 +1,36 @@
+{% extends "../base.html" %}
+
+{% block content %}
+    <h2>General Scores Page</h2>
+
+    <div class="navigation">
+        <h3>Navigate to Scores</h3>
+
+        <div class="sessions">
+            <h4>By Session</h4>
+            <ul>
+                {% for session in sessions %}
+                    <li><a href="{% url 'polls:session_scores' session.name|slugify %}">{{ session.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="users">
+            <h4>By User</h4>
+            <ul>
+                {% for user in users %}
+                    <li><a href="{% url 'polls:user_scores' user %}">{{ user }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="wines">
+            <h4>By Wine</h4>
+            <ul>
+                {% for wine in wines %}
+                    <li><a href="{% url 'polls:wine_scores' wine.id %}">{{ wine.full_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
