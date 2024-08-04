@@ -3,10 +3,10 @@
 import os
 import sys
 
-from dotenv import load_dotenv
+import dotenv
 
 def main():
-    load_dotenv()
+    dotenv.read_dotenv()
 
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'VoyageDuVin.settings')
