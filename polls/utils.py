@@ -194,9 +194,15 @@ def _scrape_wines(line):
         wineDict["special_feature_photo_url"] = {}
 
 def handle_new_wines(file):
-    print(file)
-    file =  open(file, "r")
-    lines = file.readlines()
-    for line in lines:
-        _scrape_wines(line.strip())
+    if isinstance(file, str):  # If file is a path (from URL input)
+        with open(file, "r") as f:
+            lines = f.readlines()
+    else:  # If file is an uploaded file (InMemoryUploadedFile or TemporaryUploadedFile)
+        lines = file.readlines()
+
+    handle_urls(lines)
+
+def handle_urls(url_list):
+    for url in url_list:
+        _scrape_wines(url.strip())
         _create_wines()

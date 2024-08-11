@@ -23,4 +23,15 @@ class WineScoreForm(forms.Form):
     )
 
 class UploadFileForm(forms.Form):
-    file = forms.FileField()
+    files = forms.FileField(required=False)
+    urls = forms.CharField(max_length=1000, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        files = cleaned_data.get("files")
+        urls = cleaned_data.get("urls")
+
+        if not files and not urls:
+            raise forms.ValidationError("You must provide either a file or a list of URLs.")
+
+        return cleaned_data

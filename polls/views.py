@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from .models import Session, SessionWine, UserScore, WineScore, Wine
 from .forms import WineScoreForm, UploadFileForm
-from .utils import add_score_excel, create_workbook, handle_new_wines
+from .utils import add_score_excel, create_workbook, handle_new_wines, handle_urls
 from VoyageDuVin import settings
 
 
@@ -52,9 +52,17 @@ def secret(request):
 
 def add_wines(request):
     if request.method == "POST":
-        form = UploadFileForm(request.POST)
-        if form.is_valid:
-            handle_new_wines(request.POST["files"])
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            if 'files' in request.FILES:
+                # Handle file upload
+                uploaded_file = request.FILES["files"]
+                handle_new_wines(uploaded_file)
+            elif 'urls' in request.POST:
+                # Handle comma-separated URLs
+                urls = request.POST["urls"]
+                url_list = [url.strip() for url in urls.split(",")]
+                handle_urls(url_list)
             return HttpResponseRedirect("add")
     else:
         form = UploadFileForm()
