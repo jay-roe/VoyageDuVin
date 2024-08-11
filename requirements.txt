@@ -48,3 +48,4 @@ virtualenv==20.24.6
 zipp==3.17.0
 beautifulSoup4
 psycopg2
+whitenoise
