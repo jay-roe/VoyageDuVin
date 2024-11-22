@@ -1,5 +1,4 @@
 {% extends "../base.html" %}
-{% load static %}
 
 {% block content %}
     <form method="POST" action="{% url 'polls:index' session_name=session_name %}">
@@ -23,7 +22,7 @@
                             <a data-bs-toggle="modal" data-bs-target="#wineModal{{ forloop.counter0 }}">
                                 <img
                                     class="align-self-center" 
-                                    src="{% static wine.image.url %}"
+                                    src="{{ wine.image.url }}"
                                     style="
                                         height: auto; width: 65%; display: block;
                                         margin-left: auto;
