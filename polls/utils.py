@@ -78,38 +78,48 @@ wineDict = {
 
 def _create_wines():
     try:
-        wine = Wine.objects.get(short_name=" ".join(wineDict["name"].split(" ")[:-1]))
-    except ObjectDoesNotExist as DoesNotExist:
+        with transaction.atomic():  # Ensures all or nothing for database changes
+            # Check if the wine already exists
+            wine = Wine.objects.get(short_name=" ".join(wineDict["name"].split(" ")[:-1]))
+            print(f"Wine {wineDict['name']} already exists.")
+            return
+    except ObjectDoesNotExist:
+        # Create a new wine
         new_wine = Wine(
             short_name=" ".join(wineDict["name"].split(" ")[:-1]),
             full_name=wineDict["name"],
-            image=wineDict["photo_url"],
-            variety=wineDict["grape_variety"],
+            variety=wineDict.get("grape_variety"),
             region=wineDict["country"],
             alcohol_content=float(wineDict["degree_alcohol"].split(" ")[0].replace(",", ".")),
-            sweetness=float(wineDict["sugar_content"].split(" ")[0].replace(",", ".").replace("<","")),
+            sweetness=float(wineDict["sugar_content"].split(" ")[0].replace(",", ".").replace("<", "")),
             color=wineDict["color"],
-            price=float(wineDict["price"].split(u'\xa0')[0].replace(",", "."))
+            price=float(wineDict["price"].split(u'\xa0')[0].replace(",", ".")),
         )
 
-        # Download the image from photo_url and save it to the Wine object
-        img_temp = urlopen(wineDict["photo_url"])
-        image_name = wineDict["name"] + ".jpg"  # Adjust the name as needed
-        # Assign the downloaded image to the 'image' field of your new_wine object
-        new_wine.image.save(image_name, File(img_temp), save=True)
+        # Download the wine image and save it as binary
+        new_wine.image_content = _download_image_as_binary(wineDict["photo_url"])
         new_wine.save()
-    
 
-        # Adding tags to the newly created Wine object
+        # Adding tags with images (if applicable)
         for key, feature in wineDict["special_feature_photo_url"].items():
-            # Check if the tag exists or create a new one
             tag, created = Tag.objects.get_or_create(name=key)
             if created:
-                tag_image_name = key + ".jpg"
-                tag_img_temp = urlopen(feature)
-                tag.image.save(tag_image_name, File(tag_img_temp), save=True)
+                tag.image_content = _download_image_as_binary(feature)
+                tag.save()
 
             new_wine.tags.add(tag)
+
+
+def _download_image_as_binary(url):
+    """
+    Downloads an image from a URL and returns its binary content.
+    """
+    try:
+        response = urlopen(url)
+        return response.read()
+    except Exception as e:
+        print(f"Error downloading image from {url}: {e}")
+        return None
 
 
 
@@ -184,14 +194,13 @@ def _scrape_wines(line):
     saq_code = soup.find("strong", attrs={"data-th": "Code SAQ"}).text.strip()
     wineDict["saq_code"] = saq_code
 
-    photo_url = soup.find("div", attrs={"id": "mtImageContainer"}).find("img", attrs={"itemprop": "image"})["src"]
-    wineDict["photo_url"] = photo_url
-    
-    try:
-        special_feature_photo_url = soup.find("div", attrs={"class", "wrapper-special-features"}).findAll("img")
-        wineDict["special_feature_photo_url"] = {img["alt"].split(":")[1].strip(): img["src"] for img in special_feature_photo_url}
-    except:
-        wineDict["special_feature_photo_url"] = {}
+    # Fetching and saving image content
+    wineDict["photo_url"] = soup.find("div", attrs={"id": "mtImageContainer"}).find("img", attrs={"itemprop": "image"})["src"]
+
+    wineDict["special_feature_photo_url"] = {
+        img["alt"].split(":")[1].strip(): img["src"]
+        for img in soup.findAll("img", attrs={"class": "special-feature"})
+    } if soup.findAll("img", attrs={"class": "special-feature"}) else {}
 
 def handle_new_wines(file):
     if isinstance(file, str):  # If file is a path (from URL input)

@@ -193,3 +193,7 @@ def general_scores(request):
         'users': users,
         'wines': wines
     })
+
+def serve_image(request, wine_id):
+    wine = Wine.objects.get(pk=wine_id)
+    return HttpResponse(wine.image, content_type="image/jpeg")

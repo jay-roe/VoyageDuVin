@@ -22,7 +22,7 @@
                             <a data-bs-toggle="modal" data-bs-target="#wineModal{{ forloop.counter0 }}">
                                 <img
                                     class="align-self-center" 
-                                    src="{{ wine.image.url }}"
+                                    src="{% url 'wine_image' wine.id %}"
                                     style="
                                         height: auto; width: 65%; display: block;
                                         margin-left: auto;
