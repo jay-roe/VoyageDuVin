@@ -104,14 +104,14 @@ def _create_wines():
             )
 
             # Download and save binary image content
-            new_wine.image_content = _download_image_as_binary(wineDict["photo_url"])
+            new_wine.image = _download_image_as_binary(wineDict["photo_url"])
             new_wine.save()
 
             # Add tags with images (if applicable)
             for key, feature in wineDict["special_feature_photo_url"].items():
                 tag, created = Tag.objects.get_or_create(name=key)
                 if created:
-                    tag.image_content = _download_image_as_binary(feature)
+                    tag.image = _download_image_as_binary(feature)
                     tag.save()
 
                 new_wine.tags.add(tag)
