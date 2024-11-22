@@ -4,6 +4,12 @@ from . import views
 
 app_name = 'polls'
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 urlpatterns = [
     path("secret/", views.secret, name="secret"),
     path("secret/add", views.add_wines, name="add_wines"),
