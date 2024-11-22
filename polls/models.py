@@ -15,11 +15,11 @@ class Wine(models.Model):
     short_name = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255)
     image = models.BinaryField()
-    variety = models.CharField(max_length=100)  # cepage
-    region = models.CharField(max_length=100)  # country, specific region
+    variety = models.CharField(max_length=255)  # cepage
+    region = models.CharField(max_length=255)  # country, specific region
     alcohol_content = models.FloatField()  # in %
     sweetness = models.FloatField()  # in g/L
-    color = models.CharField(max_length=100) 
+    color = models.CharField(max_length=255)
     tags = models.ManyToManyField(Tag, blank=True)  # natural, organic etc.
     emoji_sucre = models.BooleanField(default=False) # special boolean to show emoji in modal
     price = models.FloatField()
