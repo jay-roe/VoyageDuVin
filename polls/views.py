@@ -197,6 +197,6 @@ def general_scores(request):
 def wine_image(request, wine_id):
     try:
         wine = Wine.objects.get(id=wine_id)
-        return HttpResponse(wine.image_content, content_type="image/jpeg")
+        return HttpResponse(wine.image, content_type="image/jpeg")
     except Wine.DoesNotExist:
         return HttpResponse(status=404)
