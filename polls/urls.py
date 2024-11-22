@@ -7,9 +7,6 @@ app_name = 'polls'
 from django.conf import settings
 from django.conf.urls.static import static
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 urlpatterns = [
     path("secret/", views.secret, name="secret"),
     path("secret/add", views.add_wines, name="add_wines"),
@@ -24,3 +21,7 @@ urlpatterns = [
     path("wine/<int:wine_id>/scores/", views.wine_scores, name="wine_scores"),
     path("general/scores/", views.general_scores, name="general_scores"),  # New path for general scores
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
