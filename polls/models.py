@@ -14,7 +14,7 @@ class Tag(models.Model):
 class Wine(models.Model):
     short_name = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255)
-    image = models.BinaryField()
+    image = models.BinaryField(blank=True, null=True)  # Storing binary image data
     variety = models.CharField(max_length=255)  # cepage
     region = models.CharField(max_length=255)  # country, specific region
     alcohol_content = models.FloatField()  # in %

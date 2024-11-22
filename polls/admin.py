@@ -1,4 +1,9 @@
+from base64 import b64encode
+
 from django.contrib import admin
+from django.utils.html import format_html
+
+from .forms import WineAdminForm
 from .models import Tag, Wine, Session, UserScore, WineScore, SessionWine
 
 class SessionWineInline(admin.TabularInline):
@@ -11,9 +16,19 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'image')
 
 class WineAdmin(admin.ModelAdmin):
+    form = WineAdminForm
     list_display = ('short_name', 'full_name', 'variety', 'region', 'alcohol_content', 'sweetness', 'color', 'price')
     list_filter = ('variety', 'region', 'color')
     search_fields = ('short_name', 'full_name', 'variety', 'region')
+
+    def display_image(self, obj):
+        if obj.image:
+            # Convert binary data to a base64 string for rendering in HTML
+            image_data = b64encode(obj.image).decode('utf-8')
+            return format_html(f'<img src="data:image/jpeg;base64,{image_data}" style="width: 50px; height: auto;">')
+        return "No Image"
+
+    display_image.short_description = "Image"
 
 class SessionAdmin(admin.ModelAdmin):
     list_display = ('name', 'date')

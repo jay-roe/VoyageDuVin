@@ -1,5 +1,7 @@
 from django import forms
 
+from polls.models import Wine
+
 
 class WineScoreForm(forms.Form):
     def __init__(self, wines, *args, **kwargs):
@@ -35,3 +37,21 @@ class UploadFileForm(forms.Form):
             raise forms.ValidationError("You must provide either a file or a list of URLs.")
 
         return cleaned_data
+
+class WineAdminForm(forms.ModelForm):
+    # Add a file input for the image
+    image_upload = forms.ImageField(required=False, label="Upload Image")
+
+    class Meta:
+        model = Wine
+        fields = '__all__'
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        # If a new image is uploaded, convert it to binary and store it
+        if self.cleaned_data.get("image_upload"):
+            uploaded_file = self.cleaned_data["image_upload"]
+            instance.image = uploaded_file.read()
+        if commit:
+            instance.save()
+        return instance
