@@ -17,6 +17,6 @@ urlpatterns = [
     path("user/<str:user_name>/scores/", views.user_scores, name="user_scores"),
     path("wine/<int:wine_id>/scores/", views.wine_scores, name="wine_scores"),
     path("general/scores/", views.general_scores, name="general_scores"),  # New path for general scores
-    path('wine-image/<int:wine_id>/', views.serve_image, name='wine_image'),
+    path('wine-image/<int:wine_id>/', views.wine_image, name='wine_image'),
 
 ]
