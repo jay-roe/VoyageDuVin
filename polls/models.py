@@ -12,8 +12,8 @@ class Tag(models.Model):
 
 
 class Wine(models.Model):
-    short_name = models.CharField(max_length=100)
-    full_name = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=255)
+    full_name = models.CharField(max_length=255)
     image = models.BinaryField()
     variety = models.CharField(max_length=100)  # cepage
     region = models.CharField(max_length=100)  # country, specific region

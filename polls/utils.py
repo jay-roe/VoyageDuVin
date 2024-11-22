@@ -80,36 +80,45 @@ wineDict = {
 
 def _create_wines():
     try:
-        with transaction.atomic():  # Ensures all or nothing for database changes
-            # Check if the wine already exists
-            wine = Wine.objects.get(short_name=" ".join(wineDict["name"].split(" ")[:-1]))
-            print(f"Wine {wineDict['name']} already exists.")
-            return
-    except ObjectDoesNotExist:
-        # Create a new wine
-        new_wine = Wine(
-            short_name=" ".join(wineDict["name"].split(" ")[:-1]),
-            full_name=wineDict["name"],
-            variety=wineDict.get("grape_variety"),
-            region=wineDict["country"],
-            alcohol_content=float(wineDict["degree_alcohol"].split(" ")[0].replace(",", ".")),
-            sweetness=float(wineDict["sugar_content"].split(" ")[0].replace(",", ".").replace("<", "")),
-            color=wineDict["color"],
-            price=float(wineDict["price"].split(u'\xa0')[0].replace(",", ".")),
-        )
+        with transaction.atomic():  # Ensures all changes are applied atomically
+            # Check if the wine already exists in the database
+            short_name = " ".join(wineDict["name"].split(" ")[:-1])[:255]  # Truncate if needed
+            try:
+                wine = Wine.objects.get(short_name=short_name)
+                print(f"Wine '{short_name}' already exists in the database.")
+                return  # Skip creation if the wine already exists
+            except Wine.DoesNotExist:
+                pass  # Proceed to create the wine if it doesn't exist
 
-        # Download the wine image and save it as binary
-        new_wine.image = _download_image_as_binary(wineDict["photo_url"])
-        new_wine.save()
+            # Create a new wine entry
+            new_wine = Wine(
+                short_name=short_name,
+                full_name=wineDict["name"][:255],
+                image=wineDict["photo_url"][:512],  # Truncate if needed
+                variety=wineDict.get("grape_variety"),
+                region=wineDict["country"],
+                alcohol_content=float(wineDict["degree_alcohol"].split(" ")[0].replace(",", ".")),
+                sweetness=float(wineDict["sugar_content"].split(" ")[0].replace(",", ".").replace("<", "")),
+                color=wineDict["color"],
+                price=float(wineDict["price"].split(u'\xa0')[0].replace(",", "."))
+            )
 
-        # Adding tags with images (if applicable)
-        for key, feature in wineDict["special_feature_photo_url"].items():
-            tag, created = Tag.objects.get_or_create(name=key)
-            if created:
-                tag.image = _download_image_as_binary(feature)
-                tag.save()
+            # Download and save binary image content
+            new_wine.image_content = _download_image_as_binary(wineDict["photo_url"])
+            new_wine.save()
 
-            new_wine.tags.add(tag)
+            # Add tags with images (if applicable)
+            for key, feature in wineDict["special_feature_photo_url"].items():
+                tag, created = Tag.objects.get_or_create(name=key)
+                if created:
+                    tag.image_content = _download_image_as_binary(feature)
+                    tag.save()
+
+                new_wine.tags.add(tag)
+
+    except Exception as e:
+        print(f"Error creating wine: {e}")
+
 
 
 def _download_image_as_binary(url):
